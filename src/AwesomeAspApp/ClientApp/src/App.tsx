@@ -3,9 +3,9 @@ import { ThemeProvider } from '@material-ui/styles';
 import { RootState } from 'awesome-asp-app';
 import React from 'react';
 import { connect } from 'react-redux';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
-import AuthRoute from './routes/AuthRoute';
-import MainRoute from './routes/MainRoute';
+import { BrowserRouter } from 'react-router-dom';
+import AnonymousRoutes from './routes/anonymous';
+import AuthenticatedRoutes from './routes/authenticated';
 
 const theme = createMuiTheme({
    palette: {
@@ -22,16 +22,7 @@ function App({ isAuthenticated }: Props) {
       <ThemeProvider theme={theme}>
          <CssBaseline />
          <BrowserRouter>
-            <Switch>
-               <Route
-                  path="/login"
-                  render={() => (!isAuthenticated ? <AuthRoute /> : <Redirect to="/" />)}
-               />
-               <Route
-                  path="/"
-                  render={() => (isAuthenticated ? <MainRoute /> : <Redirect to="/login" />)}
-               />
-            </Switch>
+            {isAuthenticated ? <AuthenticatedRoutes /> : <AnonymousRoutes />}
          </BrowserRouter>
       </ThemeProvider>
    );

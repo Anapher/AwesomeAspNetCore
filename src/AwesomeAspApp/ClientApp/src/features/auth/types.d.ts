@@ -4,7 +4,7 @@ declare module 'MyModels' {
       refreshToken: string;
    };
 
-   export type SignInRequest = {
+   export interface SignInRequest {
       username: string;
       password: string;
       rememberMe: boolean;

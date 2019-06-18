@@ -6,6 +6,7 @@
          "node_modules/**/*.ts",
          "coverage/lcov-report/*.js"
       ],
-      "no-implicit-dependencies": false
+      "no-implicit-dependencies": false,
+      "jsx-boolean-value": "never"
    }
 }
