@@ -1,12 +1,12 @@
 {
    "extends": ["tslint:latest", "tslint-react", "tslint-config-prettier"],
    "linterOptions": {
-      "exclude": [
-         "config/**/*.js",
-         "node_modules/**/*.ts",
-         "coverage/lcov-report/*.js"
-      ],
-      "no-implicit-dependencies": false,
-      "jsx-boolean-value": "never"
+      "exclude": ["config/**/*.js", "node_modules/**/*.ts", "coverage/lcov-report/*.js"],
+      "rules": {
+         "jsx-no-lambda": false,
+         "max-line-length": [true, 120],
+         "no-implicit-dependencies": false,
+         "jsx-boolean-value": "never"
+      }
    }
 }
