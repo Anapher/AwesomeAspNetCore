@@ -31,6 +31,7 @@
     "redux": "^4.0.1",
     "redux-observable": "^1.1.0",
     "redux-promise-listener": "^1.1.1",
+    "redux-react-hook": "^3.3.2",
     "reselect": "^4.0.0",
     "rxjs": "^6.5.2",
     "tslint": "^5.17.0",

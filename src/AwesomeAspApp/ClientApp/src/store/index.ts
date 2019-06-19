@@ -5,8 +5,9 @@ import createReduxPromiseListener from 'redux-promise-listener';
 import services from '../services';
 import rootEpic from './root-epic';
 import rootReducer from './root-reducer';
-import { composeEnhancers } from './utils';
+import createMiddleware from './signalr/create-middleware';
 import { loadState, persistState } from './storage';
+import { composeEnhancers } from './utils';
 
 export const epicMiddleware = createEpicMiddleware<RootAction, RootAction, RootState, Services>({
    dependencies: services,
@@ -14,8 +15,10 @@ export const epicMiddleware = createEpicMiddleware<RootAction, RootAction, RootS
 
 const reduxPromiseListener = createReduxPromiseListener();
 
+const signalrMiddleware = createMiddleware();
+
 // configure middlewares
-const middlewares = [epicMiddleware, reduxPromiseListener.middleware];
+const middlewares = [epicMiddleware, reduxPromiseListener.middleware, signalrMiddleware];
 
 // compose enhancers
 const enhancer = composeEnhancers(applyMiddleware(...middlewares));
