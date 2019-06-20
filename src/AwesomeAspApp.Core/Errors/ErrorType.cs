@@ -4,8 +4,9 @@ using System.Text;
 
 namespace AwesomeAspApp.Core.Errors
 {
-    public enum ErrorCodes
+    public enum ErrorType
     {
-        FieldValidation = 0
+        ValidationError,
+        Authentication
     }
 }

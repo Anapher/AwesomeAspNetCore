@@ -5,13 +5,13 @@ namespace AwesomeAspApp.Core.Dto.UseCaseRequests
 {
     public class LoginRequest : IUseCaseRequest<LoginResponse>
     {
-        public string Username { get; }
-        public string Password { get; }
-        public string RemoteIpAddress { get; }
+        public string? UserName { get; }
+        public string? Password { get; }
+        public string? RemoteIpAddress { get; }
 
-        public LoginRequest(string userName, string password, string remoteIpAddress)
+        public LoginRequest(string? userName, string? password, string? remoteIpAddress)
         {
-            Username = userName;
+            UserName = userName;
             Password = password;
             RemoteIpAddress = remoteIpAddress;
         }

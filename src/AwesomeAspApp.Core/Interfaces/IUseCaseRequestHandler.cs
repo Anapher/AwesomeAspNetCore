@@ -1,16 +1,14 @@
-﻿using AwesomeAspApp.Core.Dto;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace AwesomeAspApp.Core.Interfaces
 {
-    public interface IUseCaseRequestHandler<in TUseCaseRequest, TUseCaseResponse> where TUseCaseRequest : IUseCaseRequest<TUseCaseResponse>
+    public interface IUseCaseRequestHandler<in TUseCaseRequest, TUseCaseResponse> : IUseCaseErrors where TUseCaseRequest : IUseCaseRequest<TUseCaseResponse> where TUseCaseResponse : class
     {
         /// <summary>
-        ///     The errors that occurred when executing the use case. If empty, the use case succeeded
+        ///     Handle the use case
         /// </summary>
-        IEnumerable<Error> Errors { get; }
-
-        Task<TUseCaseResponse> Handle(TUseCaseRequest message);
+        /// <param name="message">The input data for the use case</param>
+        /// <returns>Return the response, or null if an error occurred</returns>
+        Task<TUseCaseResponse?> Handle(TUseCaseRequest message);
     }
 }

@@ -1,23 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace AwesomeAspApp.Infrastructure.Identity
 {
-
     public class BCryptPasswordHasher<TUser> : PasswordHasher<TUser> where TUser : class
     {
-        /// <summary>
-        ///  Overrides instance of Microsoft.AspNetCore.Identity.PasswordHasher
-        /// </summary>
-        /// <param name="optionsAccessor"></param>
-        public BCryptPasswordHasher(IOptions<PasswordHasherOptions> optionsAccessor = null)
-        {
-
-        }
-
         /// <summary>
         ///  Returns a hashed representation of the supplied password for the specified user.
         /// </summary>
@@ -27,8 +15,7 @@ namespace AwesomeAspApp.Infrastructure.Identity
         }
 
         /// <summary>
-        /// Returns a Microsoft.AspNetCore.Identity.PasswordVerificationResult indicating
-        //     the result of a password hash comparison.
+        /// Returns a Microsoft.AspNetCore.Identity.PasswordVerificationResult indicating the result of a password hash comparison.
         /// </summary>
         /// <param name="user"></param>
         /// <param name="hashedPassword">The hash value for a user's stored password.</param>

@@ -1,11 +1,18 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
+using AwesomeAspApp.Core;
+using AwesomeAspApp.Core.Dto;
+using AwesomeAspApp.Core.Errors;
+using AwesomeAspApp.Infrastructure;
+using AwesomeAspApp.Infrastructure.Auth;
+using AwesomeAspApp.Infrastructure.Data;
+using AwesomeAspApp.Infrastructure.Helpers;
 using AwesomeAspApp.Infrastructure.Identity;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -16,6 +23,7 @@ using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +42,8 @@ namespace AwesomeAspApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging();
+
             // Add framework services.
             services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default"), b => b.MigrationsAssembly("AwesomeAspApp.Infrastructure")));
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default"), b => b.MigrationsAssembly("AwesomeAspApp.Infrastructure")));
@@ -73,35 +83,34 @@ namespace AwesomeAspApp
             };
 
             services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-}).AddJwtBearer(configureOptions =>
-{
-    configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
-    configureOptions.TokenValidationParameters = tokenValidationParameters;
-    configureOptions.SaveToken = true;
-
-    configureOptions.Events = new JwtBearerEvents
-    {
-        OnAuthenticationFailed = context =>
-        {
-            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
             {
-                context.Response.Headers.Add("Token-Expired", "true");
-            }
-            return Task.CompletedTask;
-        }
-    };
-});
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(configureOptions =>
+            {
+                configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                configureOptions.TokenValidationParameters = tokenValidationParameters;
+                configureOptions.SaveToken = true;
+
+                configureOptions.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
             // api user claim policy
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("ApiUser", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
             });
-
 
             // add identity
             var identityBuilder = services.AddIdentityCore<AppUser>(o =>
@@ -120,7 +129,16 @@ namespace AwesomeAspApp
             // use BCrypt to hash passwords
             services.AddScoped<IPasswordHasher<AppUser>, BCryptPasswordHasher<AppUser>>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc()
+    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context => new BadRequestObjectResult(new FieldValidationError(context.ModelState.ToDictionary(x => x.Key, x => x.Value.Errors.First().ErrorMessage)));
+    });
+
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
@@ -146,11 +164,15 @@ namespace AwesomeAspApp
                     });
 
                 c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> { { "Bearer", new string[] { } } });
-            });
 
+                c.AddFluentValidationRules();
+            });
 
             // Now register our services with Autofac container.
             var builder = new ContainerBuilder();
+
+            builder.RegisterModule(new CoreModule());
+            builder.RegisterModule(new InfrastructureModule());
 
             builder.Populate(services);
             var container = builder.Build();
@@ -176,7 +198,7 @@ namespace AwesomeAspApp
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
             // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "AwesomeAspApp API V1"); });
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AwesomeAspApp API V1"));
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -184,7 +206,7 @@ namespace AwesomeAspApp
 
             app.UseAuthentication();
 
-            app.UseSignalR(opts => opts.MapHub<object>("/signalr"));
+            //app.UseSignalR(opts => opts.MapHub<object>("/signalr"));
 
             app.UseMvc(routes =>
             {

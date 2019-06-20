@@ -9,6 +9,7 @@ namespace AwesomeAspApp.Core.Shared
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int Id { get; set; }
+
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset ModifiedOn { get; set; }
     }

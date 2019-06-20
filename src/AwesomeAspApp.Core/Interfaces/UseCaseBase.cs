@@ -1,37 +1,36 @@
 ﻿using AwesomeAspApp.Core.Dto;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace AwesomeAspApp.Core.Interfaces
 {
-    public abstract class UseCaseStatus
+    public abstract class UseCaseStatus<TResponse> : IUseCaseErrors where TResponse : class
     {
-        protected List<Error> _errors;
-
         /// <summary>
         ///     The errors that occurred when executing this UseCase. If empty, the UseCase succeeded
         /// </summary>
-        public IEnumerable<Error> Errors => _errors;
+        public Error? Error { get; set; }
+
+        /// <summary>
+        ///     Returns true if <see cref="Error"/> is not null
+        /// </summary>
+        public bool HasError => Error != null;
 
         /// <summary>
         ///     This adds one error to the Errors collection
         /// </summary>
         /// <param name="error">The error that should be added</param>
-        protected void AddError(Error error)
+        protected void SetError(Error error)
         {
-            _errors.Add(error);
+            Error = error;
         }
 
         /// <summary>
         ///     Returns the error: adds the error to the collection and returns default(T).
         /// </summary>
-        /// <typeparam name="T">The use case response type</typeparam>
         /// <param name="error">The error that occurred.</param>
         /// <returns>Always return default(T)</returns>
-        protected T ReturnError<T>(Error error)
+        protected TResponse? ReturnError(Error error)
         {
-            AddError(error);
+            SetError(error);
             return default;
         }
     }

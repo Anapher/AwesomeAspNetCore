@@ -6,6 +6,6 @@ namespace AwesomeAspApp.Core.Interfaces.Services
 {
     public interface IJwtFactory
     {
-        Task<AccessToken> GenerateEncodedToken(string id, string userName);
+        Task<string> GenerateEncodedToken(string id, string userName);
     }
 }

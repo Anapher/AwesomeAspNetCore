@@ -12,13 +12,9 @@ namespace AwesomeAspApp.Core.Dto
             Fields = fields;
         }
 
-        public Error()
-        {
-        }
-
-        public string Type { get; set; }
-        public string Message { get; set; }
-        public int Code { get; set; }
+        public string Type { get; }
+        public string Message { get; }
+        public int Code { get; }
         public IReadOnlyDictionary<string, string>? Fields { get; set; }
     }
 }

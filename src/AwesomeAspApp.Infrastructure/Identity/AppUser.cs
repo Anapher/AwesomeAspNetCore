@@ -1,9 +1,12 @@
+using AwesomeAspApp.Core.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace AwesomeAspApp.Infrastructure.Identity
 {
     public class AppUser : IdentityUser
     {
-        // Add additional profile data for application users by adding properties to this class
+        public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+        public string? UnconfirmedEmailAddress { get; set; }
     }
 }

@@ -1,5 +1,5 @@
+using AwesomeAspApp.Infrastructure.Shared;
 using Microsoft.EntityFrameworkCore;
-using Web.Api.Infrastructure.Shared;
 
 namespace AwesomeAspApp.Infrastructure.Identity
 {
