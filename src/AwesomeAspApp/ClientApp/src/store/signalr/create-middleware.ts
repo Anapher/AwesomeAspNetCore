@@ -1,8 +1,8 @@
-import { MiddlewareAPI, Dispatch, Middleware } from 'redux';
+import { Middleware, MiddlewareAPI } from 'redux';
 import * as actionTypes from './action-types';
-import { Options, Action } from './types';
-import ReduxSignalR from './redux-signalr';
 import { error } from './actions';
+import ReduxSignalR from './redux-signalr';
+import { Action, Options } from './types';
 
 /**
  * Default middleware creator options.
@@ -12,7 +12,7 @@ const defaultOptions = {
    prefix: actionTypes.DEFAULT_PREFIX,
 };
 
-export default (rawOptions?: Options): Middleware => {
+export default (rawOptions: Options): Middleware => {
    const options = { ...defaultOptions, ...rawOptions };
    const { prefix } = options;
    const actionPrefixExp = RegExp(`^${prefix}::`);
@@ -23,11 +23,10 @@ export default (rawOptions?: Options): Middleware => {
    const handlers: {
       [s: string]: (middleware: MiddlewareAPI, action: Action) => void;
    } = {
-      [actionTypes.SIGNALR_CONNECT]: signalr.connect,
-      [actionTypes.SIGNALR_DISCONNECT]: signalr.disconnect,
       [actionTypes.SIGNALR_SEND]: signalr.send,
       [actionTypes.SIGNALR_ADDHANDLER]: signalr.addHandler,
       [actionTypes.SIGNALR_REMOVEHANDLER]: signalr.removeHandler,
+      [actionTypes.SIGNALR_DISCONNECT]: signalr.disconnect,
    };
 
    // Middleware function.

@@ -3,11 +3,13 @@ import { Field, Form, Formik, FormikActions } from 'formik';
 import { CheckboxWithLabel, TextField } from 'formik-material-ui';
 import { SignInRequest } from 'MyModels';
 import React, { useCallback } from 'react';
-import to from 'src/utils/to';
 import useAsyncFunction from 'src/hooks/use-async-function';
 import { IRequestErrorResponse } from 'src/utils/error-result';
+import to from 'src/utils/to';
 import * as yup from 'yup';
 import * as actions from '../actions';
+import * as errorUtils from 'src/utils/error-result';
+import { applyError } from 'src/utils/formik-helpers';
 
 const schema = yup.object().shape({
    username: yup.string().required(),
@@ -28,12 +30,13 @@ export default function SignInForm() {
       actions.signInAsync.failure,
    );
    const signInCallback = useCallback(
-      async (values: SignInRequest, { setSubmitting }: FormikActions<SignInRequest>) => {
+      async (values: SignInRequest, formikActions: FormikActions<SignInRequest>) => {
+         const { setSubmitting } = formikActions;
          try {
             await signInAction!(values);
             // the view will automatically change when the user is authenticated
          } catch (error) {
-            const response = error as IRequestErrorResponse;
+            applyError(error, formikActions);
          } finally {
             setSubmitting(false);
          }

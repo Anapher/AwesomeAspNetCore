@@ -15,7 +15,12 @@ export const epicMiddleware = createEpicMiddleware<RootAction, RootAction, RootS
 
 const reduxPromiseListener = createReduxPromiseListener();
 
-const signalrMiddleware = createMiddleware();
+const signalrMiddleware = createMiddleware({
+   getOptions: state => ({
+      accessTokenFactory: () => (state() as RootState).auth.token!.accessToken,
+   }),
+   url: '/signalr',
+});
 
 // configure middlewares
 const middlewares = [epicMiddleware, reduxPromiseListener.middleware, signalrMiddleware];

@@ -2,8 +2,8 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using AwesomeAspApp.Core;
-using AwesomeAspApp.Core.Dto;
 using AwesomeAspApp.Core.Errors;
+using AwesomeAspApp.Hubs;
 using AwesomeAspApp.Infrastructure;
 using AwesomeAspApp.Infrastructure.Auth;
 using AwesomeAspApp.Infrastructure.Data;
@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -95,12 +94,13 @@ namespace AwesomeAspApp
 
                 configureOptions.Events = new JwtBearerEvents
                 {
-                    OnAuthenticationFailed = context =>
+                    OnMessageReceived = context =>
                     {
-                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                        {
-                            context.Response.Headers.Add("Token-Expired", "true");
-                        }
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+
+                        if (!string.IsNullOrEmpty(accessToken))
+                            context.Token = accessToken;
                         return Task.CompletedTask;
                     }
                 };
@@ -111,6 +111,8 @@ namespace AwesomeAspApp
             {
                 options.AddPolicy("ApiUser", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
             });
+
+            services.AddSignalR();
 
             // add identity
             var identityBuilder = services.AddIdentityCore<AppUser>(o =>
@@ -130,11 +132,11 @@ namespace AwesomeAspApp
             services.AddScoped<IPasswordHasher<AppUser>, BCryptPasswordHasher<AppUser>>();
 
             services.AddMvc()
-    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-    .ConfigureApiBehaviorOptions(options =>
-    {
-        options.InvalidModelStateResponseFactory = context => new BadRequestObjectResult(new FieldValidationError(context.ModelState.ToDictionary(x => x.Key, x => x.Value.Errors.First().ErrorMessage)));
-    });
+                        .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                        .ConfigureApiBehaviorOptions(options =>
+                        {
+                            options.InvalidModelStateResponseFactory = context => new BadRequestObjectResult(new FieldValidationError(context.ModelState.ToDictionary(x => x.Key, x => x.Value.Errors.First().ErrorMessage)));
+                        });
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -206,7 +208,7 @@ namespace AwesomeAspApp
 
             app.UseAuthentication();
 
-            //app.UseSignalR(opts => opts.MapHub<object>("/signalr"));
+            app.UseSignalR(opts => opts.MapHub<CoreHub>("/signalr"));
 
             app.UseMvc(routes =>
             {
@@ -221,7 +223,9 @@ namespace AwesomeAspApp
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
+                    // uncomment this if you want the React app to start with ASP.Net Core (else you have to start it manually)
+                    //spa.UseReactDevelopmentServer(npmScript: "start"); 
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
                 }
             });
         }

@@ -30,7 +30,9 @@ export default function SignInDialog() {
             Sign In
          </Typography>
 
-         <SignInForm />
+         <Box mt={2}>
+            <SignInForm />
+         </Box>
 
          <Box mt={2}>
             <Typography>
