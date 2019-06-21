@@ -5,7 +5,7 @@ namespace AwesomeAspApp.Core.Domain.Entities
 {
     public class RefreshToken : BaseEntity
     {
-        public string? UserId { get; private set; }
+        public string? AppUserId { get; private set; }
 
         public string Token { get; private set; }
         public DateTimeOffset Expires { get; private set; }

@@ -6,8 +6,8 @@
         {
         }
 
-        public static AuthenticationError UserNotFound = new AuthenticationError("The user was not found.", ErrorCode.UserNotFound);
-        public static AuthenticationError InvalidToken = new AuthenticationError("Invalid token.", ErrorCode.InvalidToken);
+        public static AuthenticationError UserNotFound => new AuthenticationError("The user was not found.", ErrorCode.UserNotFound);
+        public static AuthenticationError InvalidToken => new AuthenticationError("Invalid token.", ErrorCode.InvalidToken);
 
     }
 }

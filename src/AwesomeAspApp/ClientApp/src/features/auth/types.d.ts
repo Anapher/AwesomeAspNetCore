@@ -5,7 +5,7 @@ declare module 'MyModels' {
    }>;
 
    export interface SignInRequest {
-      username: string;
+      userName: string;
       password: string;
       rememberMe: boolean;
    }

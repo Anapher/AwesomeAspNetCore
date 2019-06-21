@@ -28,7 +28,24 @@ namespace AwesomeAspApp.Extensions
         public static ActionResult ToActionResult(this Error error)
         {
             var httpCode = ErrorStatusCodes[error.Type];
+
+            if (error.Fields?.Count > 0)
+            {
+                error = new Error(error.Type, error.Message, error.Code, ConvertDictionaryKeysToCamelCase(error.Fields)); // clone
+            }
+
             return new ObjectResult(error) { StatusCode = httpCode };
+        }
+
+        private static IReadOnlyDictionary<string, TValue> ConvertDictionaryKeysToCamelCase<TValue>(IReadOnlyDictionary<string, TValue> dictionary)
+        {
+            var newDic = new Dictionary<string, TValue>();
+            foreach (var item in dictionary)
+            {
+                newDic.Add(item.Key.ToCamelCase(), item.Value);
+            }
+
+            return newDic;
         }
     }
 }

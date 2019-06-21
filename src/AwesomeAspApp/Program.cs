@@ -11,7 +11,7 @@ namespace AwesomeAspApp
         {
             try
             {
-                CreateWebHostBuilder(args).Build().Run();
+                CreateWebHostBuilder(args).Build().InitializeDatabase().Run();
                 return 0;
             }
             catch (Exception e)

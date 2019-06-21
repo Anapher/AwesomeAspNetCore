@@ -25,13 +25,6 @@ export function applyError<T>(
       setStatus(toString(response));
    } else {
       setStatus(null);
-      setErrors(convertMapToObject(response.response.fields) as any);
+      setErrors(response.response.fields as any);
    }
-}
-
-function convertMapToObject<T>(map: Map<string, T>): { [key: string]: T } {
-   const obj: { [key: string]: T } = {};
-
-   map.forEach((value, key) => (obj[key] = value));
-   return obj;
 }

@@ -54,7 +54,7 @@ My experience has shown that it's sometimes really nice to have real world examp
 
 - Unit Tests are implemented using [XUnit](https://xunit.net/)
 - Mocks are created using [Moq](https://github.com/moq/moq4)
-- Integration tests are done with Docker to create a reproducible environment
+- Integration tests that can be debugged
 
 ## Sources
 

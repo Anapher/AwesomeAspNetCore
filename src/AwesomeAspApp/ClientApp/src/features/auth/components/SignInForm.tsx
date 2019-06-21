@@ -4,21 +4,19 @@ import { CheckboxWithLabel, TextField } from 'formik-material-ui';
 import { SignInRequest } from 'MyModels';
 import React, { useCallback } from 'react';
 import useAsyncFunction from 'src/hooks/use-async-function';
-import { IRequestErrorResponse } from 'src/utils/error-result';
+import { applyError } from 'src/utils/formik-helpers';
 import to from 'src/utils/to';
 import * as yup from 'yup';
 import * as actions from '../actions';
-import * as errorUtils from 'src/utils/error-result';
-import { applyError } from 'src/utils/formik-helpers';
 
 const schema = yup.object().shape({
-   username: yup.string().required(),
+   userName: yup.string().required(),
    password: yup.string().required(),
    rememberMe: yup.boolean(),
 });
 
 const initialValues: SignInRequest = {
-   username: '',
+   userName: '',
    password: '',
    rememberMe: false,
 };
@@ -56,7 +54,7 @@ export default function SignInForm() {
                   <Grid item xs={12}>
                      <Field
                         label="Username"
-                        name="username"
+                        name="userName"
                         fullWidth
                         required
                         component={TextField}

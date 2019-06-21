@@ -1,12 +1,9 @@
 import Axios from 'axios';
 import { AccessInfo } from 'MyModels';
 
-export async function signIn(
-   username: string,
-   password: string,
-): Promise<AccessInfo> {
+export async function signIn(userName: string, password: string): Promise<AccessInfo> {
    const response = await Axios.post<AccessInfo>('/api/v1/auth/login', {
-      username,
+      userName,
       password,
    });
 
@@ -14,9 +11,6 @@ export async function signIn(
 }
 
 export async function refreshToken(access: AccessInfo): Promise<AccessInfo> {
-   const response = await Axios.post<AccessInfo>(
-      '/api/v1/auth/refreshtoken',
-      access,
-   );
+   const response = await Axios.post<AccessInfo>('/api/v1/auth/refreshtoken', access);
    return response.data;
 }

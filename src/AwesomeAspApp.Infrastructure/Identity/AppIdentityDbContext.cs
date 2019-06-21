@@ -13,5 +13,12 @@ namespace AwesomeAspApp.Infrastructure.Identity
         }
 
         public DbSet<RefreshToken> AspNetRefreshTokens { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<RefreshToken>().Property(x => x.CreatedOn).HasDefaultValueSql("GETUTCDATE()");
+        }
     }
 }

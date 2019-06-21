@@ -15,8 +15,8 @@ export const signInEpic: Epic<RootAction, RootAction, RootState, Services> = (
 ) =>
    action$.pipe(
       filter(isActionOf(actions.signInAsync.request)),
-      switchMap(({ payload: { username, password } }) =>
-         from(api.auth.signIn(username, password)).pipe(
+      switchMap(({ payload: { userName, password } }) =>
+         from(api.auth.signIn(userName, password)).pipe(
             map(response => actions.signInAsync.success(response)),
             catchError((error: AxiosError) =>
                of(actions.signInAsync.failure(toErrorResult(error))),

@@ -114,6 +114,9 @@ namespace AwesomeAspApp
 
             services.AddSignalR();
 
+            // use BCrypt to hash passwords
+            services.AddScoped<IPasswordHasher<AppUser>, BCryptPasswordHasher<AppUser>>();
+
             // add identity
             var identityBuilder = services.AddIdentityCore<AppUser>(o =>
             {
@@ -128,9 +131,6 @@ namespace AwesomeAspApp
             identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(IdentityRole), identityBuilder.Services);
             identityBuilder.AddEntityFrameworkStores<AppIdentityDbContext>().AddDefaultTokenProviders();
 
-            // use BCrypt to hash passwords
-            services.AddScoped<IPasswordHasher<AppUser>, BCryptPasswordHasher<AppUser>>();
-
             services.AddMvc()
                         .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                         .ConfigureApiBehaviorOptions(options =>
@@ -142,7 +142,7 @@ namespace AwesomeAspApp
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(Assembly.GetExecutingAssembly(), typeof(InfrastructureModule).Assembly);
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

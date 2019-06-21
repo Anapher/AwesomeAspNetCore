@@ -16,7 +16,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6F9069E4-DBB5-4485-B1DA-356B72489EA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwesomeAspApp.Core.Tests", "test\AwesomeAspApp.Core.Tests\AwesomeAspApp.Core.Tests.csproj", "{38B967D3-D5AC-42EE-80EE-0F5CBBB253AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AwesomeAspApp.Core.Tests", "test\AwesomeAspApp.Core.Tests\AwesomeAspApp.Core.Tests.csproj", "{38B967D3-D5AC-42EE-80EE-0F5CBBB253AB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AwesomeAspApp.Infrastructure.Tests", "tests\AwesomeAspApp.Infrastructure.Tests\AwesomeAspApp.Infrastructure.Tests.csproj", "{7F9664BA-1911-4F3B-A3D0-7B9B92EF7267}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwesomeAspApp.IntegrationTests", "tests\AwesomeAspApp.IntegrationTests\AwesomeAspApp.IntegrationTests.csproj", "{26236B9E-FDB6-46F4-96B5-C57A6BD4AF68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,12 +44,22 @@ Global
 		{38B967D3-D5AC-42EE-80EE-0F5CBBB253AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38B967D3-D5AC-42EE-80EE-0F5CBBB253AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38B967D3-D5AC-42EE-80EE-0F5CBBB253AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F9664BA-1911-4F3B-A3D0-7B9B92EF7267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F9664BA-1911-4F3B-A3D0-7B9B92EF7267}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F9664BA-1911-4F3B-A3D0-7B9B92EF7267}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F9664BA-1911-4F3B-A3D0-7B9B92EF7267}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26236B9E-FDB6-46F4-96B5-C57A6BD4AF68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26236B9E-FDB6-46F4-96B5-C57A6BD4AF68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26236B9E-FDB6-46F4-96B5-C57A6BD4AF68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26236B9E-FDB6-46F4-96B5-C57A6BD4AF68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{38B967D3-D5AC-42EE-80EE-0F5CBBB253AB} = {6F9069E4-DBB5-4485-B1DA-356B72489EA7}
+		{7F9664BA-1911-4F3B-A3D0-7B9B92EF7267} = {6F9069E4-DBB5-4485-B1DA-356B72489EA7}
+		{26236B9E-FDB6-46F4-96B5-C57A6BD4AF68} = {6F9069E4-DBB5-4485-B1DA-356B72489EA7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F7D7B8F-88C3-4E81-977E-2D5D19158921}
