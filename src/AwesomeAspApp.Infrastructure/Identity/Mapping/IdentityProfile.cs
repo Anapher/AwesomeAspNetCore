@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using AwesomeAspApp.Core.Domain.Entities;
+using System.Linq;
+using System.Reflection;
 
 namespace AwesomeAspApp.Infrastructure.Identity.Mapping
 {
@@ -7,8 +9,9 @@ namespace AwesomeAspApp.Infrastructure.Identity.Mapping
     {
         public IdentityProfile()
         {
-            CreateMap<AppUser, User>().ConstructUsing(u => new User(u.Id, u.UserName, u.PasswordHash));
-            CreateMap<User, AppUser>();
+            var refreshTokensField = typeof(User).GetField("_refreshTokens", BindingFlags.NonPublic | BindingFlags.Instance);
+            CreateMap<AppUser, User>().ConstructUsing(u => new User(u.Id, u.UserName, u.PasswordHash)).AfterMap((appUser, user) => refreshTokensField.SetValue(user, appUser.RefreshTokens.ToList()));
+            CreateMap<User, AppUser>().AfterMap((user, appUser) => appUser.RefreshTokens = user.RefreshTokens.ToList());
         }
     }
 }

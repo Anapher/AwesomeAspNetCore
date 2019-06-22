@@ -11,11 +11,13 @@ namespace AwesomeAspApp.Infrastructure.Identity.Repositories
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly AppIdentityDbContext _context;
 
-        public UserRepository(UserManager<AppUser> userManager, IMapper mapper)
+        public UserRepository(UserManager<AppUser> userManager, AppIdentityDbContext context, IMapper mapper)
         {
             _userManager = userManager;
             _mapper = mapper;
+            _context = context;
         }
 
         public async Task<CreateUserResponse> Create(string email, string userName, string password)
@@ -45,6 +47,8 @@ namespace AwesomeAspApp.Infrastructure.Identity.Repositories
         public async Task Update(User entity)
         {
             var appUser = await _userManager.FindByIdAsync(entity.Id);
+            await _context.Entry(appUser).Collection(x => x.RefreshTokens).LoadAsync();
+
             _mapper.Map(entity, appUser);
             await _userManager.UpdateAsync(appUser);
         }
@@ -59,6 +63,8 @@ namespace AwesomeAspApp.Infrastructure.Identity.Repositories
         {
             var appUser = await _userManager.FindByIdAsync(id);
             if (appUser == null) return null;
+
+            await _context.Entry(appUser).Collection(x => x.RefreshTokens).LoadAsync();
 
             return _mapper.Map<User>(appUser);
         }

@@ -46,8 +46,7 @@ namespace Web.Api.IntegrationTests.Controllers
             httpResponse.EnsureSuccessStatusCode();
             var stringResponse = await httpResponse.Content.ReadAsStringAsync();
             dynamic result = JObject.Parse(stringResponse);
-            Assert.NotNull(result.accessToken.token);
-            Assert.Equal(7200, (int)result.accessToken.expiresIn);
+            Assert.NotNull(result.accessToken);
             Assert.NotNull(result.refreshToken);
         }
 
