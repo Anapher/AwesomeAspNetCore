@@ -36,7 +36,10 @@ namespace AwesomeAspApp.Infrastructure.Identity.Repositories
         public async Task<User?> FindByName(string userName)
         {
             var appUser = await _userManager.FindByNameAsync(userName);
-            return appUser == null ? null : _mapper.Map<User>(appUser);
+            if (appUser == null) return null;
+
+            await _context.Entry(appUser).Collection(x => x.RefreshTokens).LoadAsync();
+            return _mapper.Map<User>(appUser);
         }
 
         public Task<bool> CheckPassword(User user, string password)
