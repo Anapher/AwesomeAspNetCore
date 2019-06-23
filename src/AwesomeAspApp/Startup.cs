@@ -191,7 +191,6 @@ namespace AwesomeAspApp
             }
             else
             {
-                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 
