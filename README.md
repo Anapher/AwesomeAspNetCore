@@ -1,5 +1,3 @@
-
-
 # ASP.Net Core & React Starter
 
 A basic implementation of ASP.Net Core as backend with a React Single Page Application as frontend. The login process is completely implemented (including front end). This project can be used a starter.
@@ -13,6 +11,7 @@ My experience has shown that it's sometimes really nice to have real world examp
 - Deployment: Dockerfile to create a Docker image for your application that can be executed in every environment
 - Best Practices and popular patterns to create a maintable and modern structure
 - State of art implementations of all used frameworks/libraries, using the most recent updates
+- Domain Driven Design
 
 #### Frontend (React)
 
@@ -55,6 +54,16 @@ My experience has shown that it's sometimes really nice to have real world examp
 - Unit Tests are implemented using [XUnit](https://xunit.net/)
 - Mocks are created using [Moq](https://github.com/moq/moq4)
 - Integration tests that can be debugged
+
+## Initialize
+
+Build with [Fake](https://fake.build/)
+
+```
+fake build
+```
+
+In root lies a script (/rename-solution.ps1) that will rename `AwesomeAspCore` to the name of your application. Just run it and it will prompt you asking for the new name.
 
 ## Sources
 
