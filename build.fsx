@@ -25,7 +25,8 @@ Target.create "Cleanup" (fun _ ->
 )
 
 Target.create "Build" (fun _ ->
-   srcDir </> "AwesomeAspApp" |> DotNet.publish (fun opts -> {opts with OutputPath = Some buildDir})
+   srcDir </> "AwesomeAspApp" |> DotNet.publish (fun opts -> {opts with OutputPath = Some buildDir
+                                                                        Configuration = DotNet.BuildConfiguration.Release})
 )
 
 Target.create "UnitTest" (fun _ ->
