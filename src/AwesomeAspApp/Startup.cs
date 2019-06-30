@@ -153,7 +153,7 @@ namespace AwesomeAspApp
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "AwesomeAspApp API", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "Awesome Asp App API", Version = "v1" });
 
                 // Swagger 2.+ support
                 c.AddSecurityDefinition("Bearer",
@@ -199,7 +199,7 @@ namespace AwesomeAspApp
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
             // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AwesomeAspApp API V1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Awesome Asp App API V1"));
 
             // app.UseHttpsRedirection();
             app.UseStaticFiles();
