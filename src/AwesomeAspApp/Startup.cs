@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -135,7 +136,10 @@ namespace AwesomeAspApp
                         .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                         .ConfigureApiBehaviorOptions(options =>
                         {
-                            options.InvalidModelStateResponseFactory = context => new BadRequestObjectResult(new FieldValidationError(context.ModelState.ToDictionary(x => x.Key, x => x.Value.Errors.First().ErrorMessage)));
+                            options.InvalidModelStateResponseFactory = context =>
+                                new BadRequestObjectResult(new FieldValidationError(
+                                    context.ModelState.Where(x => x.Value.ValidationState == ModelValidationState.Invalid)
+                                    .ToDictionary(x => x.Key, x => x.Value.Errors.First().ErrorMessage)));
                         });
 
             services.AddMvc()
