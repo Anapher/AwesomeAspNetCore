@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Web.Api.IntegrationTests
+namespace AwesomeAspAppIntegrationTests
 {
     public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<Startup>
     {
@@ -34,7 +34,7 @@ namespace Web.Api.IntegrationTests
                     options.UseInternalServiceProvider(serviceProvider);
                 });
 
-                
+
                 // Build the service provider.
                 var sp = services.BuildServiceProvider();
 

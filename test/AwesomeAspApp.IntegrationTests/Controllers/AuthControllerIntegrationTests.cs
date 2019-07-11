@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Web.Api.IntegrationTests.Controllers
+namespace AwesomeAspAppIntegrationTests.Controllers
 {
     public class AuthControllerIntegrationTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
@@ -22,7 +22,7 @@ namespace Web.Api.IntegrationTests.Controllers
         [Fact]
         public async Task CanLoginWithValidCredentials()
         {
-            var httpResponse = await _client.PostAsync("/api/v1/auth/login", new StringContent(JsonConvert.SerializeObject(new LoginRequestDto{UserName = "mmacneil", Password = "Pa$$W0rd1" }), Encoding.UTF8, "application/json"));
+            var httpResponse = await _client.PostAsync("/api/v1/auth/login", new StringContent(JsonConvert.SerializeObject(new LoginRequestDto { UserName = "mmacneil", Password = "Pa$$W0rd1" }), Encoding.UTF8, "application/json"));
             httpResponse.EnsureSuccessStatusCode();
             var stringResponse = await httpResponse.Content.ReadAsStringAsync();
             dynamic result = JObject.Parse(stringResponse);

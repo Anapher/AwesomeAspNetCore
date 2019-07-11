@@ -3,7 +3,7 @@ using AwesomeAspApp.Infrastructure.Data;
 using AwesomeAspApp.Infrastructure.Identity;
 using System;
 
-namespace Web.Api.IntegrationTests
+namespace AwesomeAspAppIntegrationTests
 {
     public static class SeedData
     {
@@ -23,7 +23,7 @@ namespace Web.Api.IntegrationTests
             user.RefreshTokens.Add(new RefreshToken("rB1afdEe6MWu6TyN8zm58xqt/3KWOLRAah2nHLWcboA=", DateTimeOffset.UtcNow.AddDays(6), "127.0.0.1"));
 
             dbContext.Users.Add(user);
-            
+
             dbContext.SaveChanges();
         }
 
