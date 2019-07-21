@@ -140,11 +140,8 @@ namespace AwesomeAspApp
                                 new BadRequestObjectResult(new FieldValidationError(
                                     context.ModelState.Where(x => x.Value.ValidationState == ModelValidationState.Invalid)
                                     .ToDictionary(x => x.Key, x => x.Value.Errors.First().ErrorMessage)));
-                        });
-
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+                        })
+                        .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly(), typeof(InfrastructureModule).Assembly);
 
