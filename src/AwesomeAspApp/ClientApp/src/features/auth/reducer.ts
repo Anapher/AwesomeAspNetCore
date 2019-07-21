@@ -35,6 +35,8 @@ export default combineReducers<AuthState, RootAction>({
             return action.payload;
          case getType(actions.signOut):
             return null;
+         case getType(actions.refreshTokenAsync.success):
+            return action.payload;
          default:
             return state;
       }

@@ -2,7 +2,7 @@
 // Initialization code goes here
 
 import { RootState } from 'awesome-asp-app';
-import Axios, { AxiosRequestConfig } from 'axios';
+import Axios, { AxiosError } from 'axios';
 import _ from 'lodash';
 import { AccessInfo } from 'MyModels';
 import { Store } from 'redux';
@@ -23,7 +23,7 @@ interface IServiceConfigurer {
 class AxiosService implements IServiceConfigurer {
    private access: AccessInfo | null = null;
    private isRefreshingAccess = false;
-   private requestsAwaitingAccess = new Array<() => void>();
+   private requestsAwaitingAccess = new Array<{ resolve: () => void; reject: () => void }>();
 
    public configure(store: Store): void {
       (store as any).subscribe(() => {
@@ -42,23 +42,37 @@ class AxiosService implements IServiceConfigurer {
 
       Axios.interceptors.response.use(
          succeeded => succeeded,
-         error => {
-            const config = error.config as AxiosRequestConfig;
-            const {
-               response: { status },
-            } = error;
+         (error: AxiosError) => {
+            const { config, response } = error;
+            if (!response || !config.url) {
+               return Promise.reject(error);
+            }
 
+            if (config.url.endsWith('auth/refreshtoken')) {
+               this.requestsAwaitingAccess.forEach(x => x.reject());
+               this.requestsAwaitingAccess = [];
+               this.isRefreshingAccess = false;
+               this.access = null;
+               this.updateToken();
+
+               return Promise.reject(error);
+            }
+
+            const { status } = response;
             if (status === 401 && this.access !== null) {
                if (!this.isRefreshingAccess) {
                   this.isRefreshingAccess = true;
                   store.dispatch(actions.refreshTokenAsync.request(this.access));
                }
 
-               const retryRequest = new Promise(resolve => {
-                  this.requestsAwaitingAccess.push(() => {
-                     // when we update the defaults, this request is not affected
-                     config.headers.Authorization = Axios.defaults.headers.common.Authorization;
-                     resolve(Axios(config));
+               const retryRequest = new Promise((resolve, reject) => {
+                  this.requestsAwaitingAccess.push({
+                     resolve: () => {
+                        // when we update the defaults, this request is not affected
+                        config.headers.Authorization = Axios.defaults.headers.common.Authorization;
+                        resolve(Axios(config));
+                     },
+                     reject: () => reject(error),
                   });
                });
                return retryRequest;
@@ -80,7 +94,7 @@ class AxiosService implements IServiceConfigurer {
          Authorization: `Bearer ${this.access.accessToken}`,
       };
 
-      this.requestsAwaitingAccess.forEach(x => x());
+      this.requestsAwaitingAccess.forEach(x => x.resolve());
       this.requestsAwaitingAccess = [];
       this.isRefreshingAccess = false;
    }
