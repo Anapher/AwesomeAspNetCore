@@ -1,4 +1,6 @@
-﻿using AwesomeAspApp.Core.Interfaces.Gateways.Repositories;
+﻿#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
+
+using AwesomeAspApp.Core.Interfaces.Gateways.Repositories;
 using AwesomeAspApp.Core.Shared;
 using AwesomeAspApp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -17,42 +19,15 @@ namespace AwesomeAspApp.Infrastructure.Shared
             _appDbContext = appDbContext;
         }
 
-        public virtual Task<T> GetById(int id)
+        public virtual Task<T?> GetById(int id)
         {
             return _appDbContext.Set<T>().FindAsync(id);
         }
 
-        public async Task<List<T>> ListAll()
+        public async Task<IList<T>> GetAll()
         {
             return await _appDbContext.Set<T>().ToListAsync();
         }
-
-        public Task<T> GetSingleBySpec(ISpecification<T> spec)
-        {
-            return ListInternal(spec).FirstOrDefaultAsync();
-        }
-
-        public Task<List<T>> List(ISpecification<T> spec)
-        {
-            return ListInternal(spec).ToListAsync();
-        }
-
-        private IQueryable<T> ListInternal(ISpecification<T> spec)
-        {
-            // fetch a Queryable that includes all expression-based includes
-            var queryableResultWithIncludes = spec.Includes
-                .Aggregate(_appDbContext.Set<T>().AsQueryable(),
-                    (current, include) => current.Include(include));
-
-            // modify the IQueryable to include any string-based include statements
-            var secondaryResult = spec.IncludeStrings
-                .Aggregate(queryableResultWithIncludes,
-                    (current, include) => current.Include(include));
-
-            // return the result of the query using the specification's criteria expression
-            return secondaryResult.Where(spec.Criteria);
-        }
-
 
         public async Task<T> Add(T entity)
         {
@@ -71,6 +46,32 @@ namespace AwesomeAspApp.Infrastructure.Shared
         {
             _appDbContext.Set<T>().Remove(entity);
             return _appDbContext.SaveChangesAsync();
+        }
+
+        public Task<T?> FirstOrDefaultBySpecs(params ISpecification<T>[] specs)
+        {
+            return QuerySpecs(specs).FirstOrDefaultAsync();
+        }
+
+        public async Task<IList<T>> GetAllBySpecs(params ISpecification<T>[] specs)
+        {
+            return await QuerySpecs(specs).ToListAsync();
+        }
+
+        protected IQueryable<T> QuerySpecs(ISpecification<T>[] specs)
+        {
+            // fetch a Queryable that includes all expression-based includes
+            var queryableResultWithIncludes = specs.SelectMany(x => x.Includes)
+                .Aggregate(_appDbContext.Set<T>().AsQueryable(),
+                    (current, include) => current.Include(include));
+
+            // modify the IQueryable to include any string-based include statements
+            var secondaryResult = specs.SelectMany(x => x.IncludeStrings)
+                .Aggregate(queryableResultWithIncludes,
+                    (current, include) => current.Include(include));
+
+            // return the result of the query using the specification's criteria expression
+            return specs.Aggregate(secondaryResult, (query, spec) => query.Where(spec.Criteria));
         }
     }
 }
