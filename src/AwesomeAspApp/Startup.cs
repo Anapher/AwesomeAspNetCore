@@ -10,7 +10,6 @@ using AwesomeAspApp.Infrastructure.Data;
 using AwesomeAspApp.Infrastructure.Helpers;
 using AwesomeAspApp.Infrastructure.Identity;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -27,6 +26,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace AwesomeAspApp
 {
@@ -133,7 +135,6 @@ namespace AwesomeAspApp
             identityBuilder.AddEntityFrameworkStores<AppIdentityDbContext>().AddDefaultTokenProviders();
 
             services.AddMvc()
-                        .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                         .ConfigureApiBehaviorOptions(options =>
                         {
                             options.InvalidModelStateResponseFactory = context =>
@@ -154,19 +155,19 @@ namespace AwesomeAspApp
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Awesome Asp App API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Awesome Asp App API", Version = "v1"});
+
+                var scheme = new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                };
 
                 // Swagger 2.+ support
-                c.AddSecurityDefinition("Bearer",
-                    new ApiKeyScheme
-                    {
-                        In = "header",
-                        Description = "Please insert JWT with Bearer into field",
-                        Name = "Authorization",
-                        Type = "apiKey"
-                    });
-
-                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> { { "Bearer", new string[] { } } });
+                c.AddSecurityDefinition("Bearer", scheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {{scheme, new List<string>()}});
 
                 c.AddFluentValidationRules();
             });
@@ -184,7 +185,7 @@ namespace AwesomeAspApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -208,13 +209,11 @@ namespace AwesomeAspApp
 
             app.UseAuthentication();
 
-            app.UseSignalR(opts => opts.MapHub<CoreHub>("/signalr"));
-
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute("default", "{controller}/{action=Index}/{id?}");
+                endpoints.MapHub<CoreHub>("/signalr");
             });
 
             app.UseSpa(spa =>

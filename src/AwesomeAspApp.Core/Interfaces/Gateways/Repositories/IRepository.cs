@@ -5,9 +5,9 @@ using AwesomeAspApp.Core.Shared;
 
 namespace AwesomeAspApp.Core.Interfaces.Gateways.Repositories
 {
-    public interface IRepository<T> where T : BaseEntity
+    public interface IRepository<T> where T : notnull, BaseEntity
     {
-        Task<T?> GetById(int id);
+        ValueTask<T?> GetById(int id);
         Task<IList<T>> GetAll();
         Task<T?> FirstOrDefaultBySpecs(params ISpecification<T>[] specs);
         Task<IList<T>> GetAllBySpecs(params ISpecification<T>[] spec);

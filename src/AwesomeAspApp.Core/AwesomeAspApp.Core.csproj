@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">  <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="autofac" Version="4.9.2" />
+    <PackageReference Include="autofac" Version="4.9.4" />
   </ItemGroup>
 
   <Import Project="../nullable.props" />

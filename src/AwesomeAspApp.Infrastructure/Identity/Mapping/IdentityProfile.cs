@@ -9,7 +9,7 @@ namespace AwesomeAspApp.Infrastructure.Identity.Mapping
     {
         public IdentityProfile()
         {
-            var refreshTokensField = typeof(User).GetField("_refreshTokens", BindingFlags.NonPublic | BindingFlags.Instance);
+            var refreshTokensField = typeof(User).GetField("_refreshTokens", BindingFlags.NonPublic | BindingFlags.Instance)!;
             CreateMap<AppUser, User>().ConstructUsing(u => new User(u.Id, u.UserName, u.PasswordHash)).AfterMap((appUser, user) => refreshTokensField.SetValue(user, appUser.RefreshTokens.ToList()));
             CreateMap<User, AppUser>().AfterMap((user, appUser) => appUser.RefreshTokens = user.RefreshTokens.ToList());
         }

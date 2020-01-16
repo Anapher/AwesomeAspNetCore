@@ -1,4 +1,5 @@
-﻿using AwesomeAspApp.Core.Interfaces.Services;
+﻿using System;
+using AwesomeAspApp.Core.Interfaces.Services;
 using AwesomeAspApp.Infrastructure.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -20,6 +21,9 @@ namespace AwesomeAspApp.Infrastructure.Auth
 
         public ClaimsPrincipal? GetPrincipalFromToken(string token)
         {
+            if (_options.SecretKey == null)
+                throw new InvalidOperationException("The secret key must not be null.");
+
             return _jwtTokenHandler.ValidateToken(token, new TokenValidationParameters
             {
                 ValidateAudience = false,
