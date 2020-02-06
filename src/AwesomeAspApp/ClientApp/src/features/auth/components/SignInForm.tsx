@@ -3,9 +3,9 @@ import { Field, Form, Formik, FormikActions } from 'formik';
 import { CheckboxWithLabel, TextField } from 'formik-material-ui';
 import { SignInRequest } from 'MyModels';
 import React, { useCallback } from 'react';
-import useAsyncFunction from 'src/hooks/use-async-function';
-import { applyError } from 'src/utils/formik-helpers';
-import to from 'src/utils/to';
+import useAsyncFunction from 'hooks/use-async-function';
+import { applyError } from 'utils/formik-helpers';
+import to from 'utils/to';
 import * as yup from 'yup';
 import * as actions from '../actions';
 
@@ -43,22 +43,12 @@ export default function SignInForm() {
    );
 
    return (
-      <Formik<SignInRequest>
-         validationSchema={schema}
-         initialValues={initialValues}
-         onSubmit={signInCallback}
-      >
+      <Formik<SignInRequest> validationSchema={schema} initialValues={initialValues} onSubmit={signInCallback}>
          {({ isSubmitting, isValid, status }) => (
             <Form>
                <Grid container spacing={2}>
                   <Grid item xs={12}>
-                     <Field
-                        label="Username"
-                        name="userName"
-                        fullWidth
-                        required
-                        component={TextField}
-                     />
+                     <Field label="Username" name="userName" fullWidth required component={TextField} />
                   </Grid>
                   <Grid item xs={12}>
                      <Field
@@ -95,13 +85,7 @@ export default function SignInForm() {
                   </Grid>
                   <Grid item xs={12} style={{ padding: 4 }}>
                      {!isSubmitting ? (
-                        <Button
-                           type="submit"
-                           fullWidth
-                           variant="contained"
-                           disabled={!isValid}
-                           color="primary"
-                        >
+                        <Button type="submit" fullWidth variant="contained" disabled={!isValid} color="primary">
                            Sign in
                         </Button>
                      ) : (
