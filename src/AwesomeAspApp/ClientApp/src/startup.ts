@@ -9,7 +9,7 @@ import { Store } from 'redux';
 import * as actions from './features/auth/actions';
 
 export default function configure(store: Store) {
-   [new AxiosService()].forEach(x => x.configure(store));
+   [new AxiosService()].forEach((x) => x.configure(store));
 }
 
 interface IServiceConfigurer {
@@ -41,7 +41,7 @@ class AxiosService implements IServiceConfigurer {
       });
 
       Axios.interceptors.response.use(
-         succeeded => succeeded,
+         (succeeded) => succeeded,
          (error: AxiosError) => {
             const { config, response } = error;
             if (!response || !config.url) {
@@ -49,7 +49,7 @@ class AxiosService implements IServiceConfigurer {
             }
 
             if (config.url.endsWith('auth/refreshtoken')) {
-               this.requestsAwaitingAccess.forEach(x => x.reject());
+               this.requestsAwaitingAccess.forEach((x) => x.reject());
                this.requestsAwaitingAccess = [];
                this.isRefreshingAccess = false;
                this.access = null;
@@ -94,7 +94,7 @@ class AxiosService implements IServiceConfigurer {
          Authorization: `Bearer ${this.access.accessToken}`,
       };
 
-      this.requestsAwaitingAccess.forEach(x => x.resolve());
+      this.requestsAwaitingAccess.forEach((x) => x.resolve());
       this.requestsAwaitingAccess = [];
       this.isRefreshingAccess = false;
    }
