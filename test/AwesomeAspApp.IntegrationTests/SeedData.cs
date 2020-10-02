@@ -1,9 +1,9 @@
+using System;
 using AwesomeAspApp.Core.Domain.Entities;
 using AwesomeAspApp.Infrastructure.Data;
 using AwesomeAspApp.Infrastructure.Identity;
-using System;
 
-namespace AwesomeAspAppIntegrationTests
+namespace AwesomeAspApp.IntegrationTests
 {
     public static class SeedData
     {

@@ -2,13 +2,12 @@
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using AwesomeAspApp;
 using AwesomeAspApp.Models.Request;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace AwesomeAspAppIntegrationTests.Controllers
+namespace AwesomeAspApp.IntegrationTests.Controllers
 {
     public class AuthControllerIntegrationTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {

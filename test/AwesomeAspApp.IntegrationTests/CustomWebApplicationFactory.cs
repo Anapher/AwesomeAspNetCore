@@ -1,5 +1,4 @@
 ﻿using System;
-using AwesomeAspApp;
 using AwesomeAspApp.Infrastructure.Data;
 using AwesomeAspApp.Infrastructure.Identity;
 using Microsoft.AspNetCore.Hosting;
@@ -8,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace AwesomeAspAppIntegrationTests
+namespace AwesomeAspApp.IntegrationTests
 {
     public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<Startup>
     {
